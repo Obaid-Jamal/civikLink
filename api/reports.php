@@ -15,13 +15,14 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'POST') {
     // --- Create a new Report ---
-    $description = $_POST['description'] ?? '';
-    $category = $_POST['category'] ?? '';
-    $priority = $_POST['priority'] ?? '';
-    $location_text = $_POST['location'] ?? '';
-    $latitude = $_POST['lat'] ?? null;
-    $longitude = $_POST['lng'] ?? null;
+$data = json_decode(file_get_contents("php://input"));
 
+$description = $data->description ?? '';
+$category = $data->category ?? '';
+$priority = $data->priority ?? '';
+$location_text = $data->location ?? '';
+$latitude = $data->lat ?? null;
+$longitude = $data->lng ?? null;
     if (empty($description) || empty($category) || empty($priority) || empty($location_text)) {
         http_response_code(400);
         echo json_encode(['status' => 'error', 'message' => 'Missing required report data.']);
