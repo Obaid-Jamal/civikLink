@@ -545,35 +545,37 @@ function renderNearbyReports(userCoords) {
 function initializeLoginPage() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const username = document.getElementById("loginUsername").value.trim();
-            const password = document.getElementById("loginPassword").value;
-
-            if (!username || !password) {
-                showToast("Please enter a username and password.", "error");
-                return;
-            }
-            
-            const user = registeredUsers.find(u => u.username === username);
-
-            if (!user || user.password !== password) {
-                showToast("Invalid username or password.", "error");
-                return;
-            }
-
             const submitBtn = e.target.querySelector('button');
             submitBtn.innerHTML = '<div class="loading"></div> Signing in...';
             submitBtn.disabled = true;
 
-            setTimeout(() => {
-                localStorage.setItem('currentUser', JSON.stringify({
-                    username: user.username,
-                    role: user.role,
-                    category: user.category
-                }));
+            const username = document.getElementById("loginUsername").value.trim();
+            const password = document.getElementById("loginPassword").value;
+
+            try {
+                const response = await fetch('api/login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'An error occurred.');
+                }
+
+                // Login was successful, the session is set on the server.
+                // Now we can redirect to the home page.
                 window.location.href = 'index.html';
-            }, 1500);
+
+            } catch (error) {
+                showToast(error.message, 'error');
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to Portal';
+                submitBtn.disabled = false;
+            }
         });
     }
 }
