@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - CivicLink Portal</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="gov-header">
+    <div class="gov-info">
+      <div class="gov-logo-section">
+        <div class="brand-main">
+          <div class="jharkhand-emblem">CL</div>
+          <div class="brand-text">
+            <div class="brand-title">CivicLink | Citizen Reporting Platform</div>
+          </div>
+        </div>
+      </div>
+      <div class="support-info">
+<span>📞 Support: 1800-123-4567 | 📧 arib7488@gmail.com</span>        <button class="btn btn-secondary" onclick="toggleLanguage()" id="languageToggle" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">
+          <i class="fas fa-language"></i>
+          <span id="langText">English</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="particles" id="particles"></div>
+
+  <div class="auth-container" id="authPage">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="gov-badge" style="margin: 0 auto 1rem;">
+          <i class="fas fa-shield-alt"></i>
+          Verified Portal
+        </div>
+        <h2 class="auth-title">
+          <div class="jharkhand-emblem">CL</div>
+          <span id="portalTitle">CivicLink Portal</span>
+        </h2>
+        <p class="auth-subtitle" id="portalSubtitle">Civic Issue Reporting Portal</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <i class="form-icon fas fa-user"></i>
+          <input type="text" class="form-input" id="loginUsername" placeholder="Enter Username" required>
+        </div>
+
+        <div class="form-group">
+          <i class="form-icon fas fa-lock"></i>
+          <input type="password" class="form-input" id="loginPassword" placeholder="Enter Password" required>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-sign-in-alt"></i>
+          <span id="loginSubmitText">Login to Portal</span>
+        </button>
+      </form>
+
+      <div style="text-align: center; margin: 1.5rem 0; color: #666;">
+        <p id="noAccountText">Don't have an account?</p>
+        <a href="signup.html" style="color: #FF8C00; text-decoration: none; font-weight: 500;" id="signupLinkText">
+          Register here
+        </a>
+      </div>
+
+      <div class="gov-footer">
+        <div class="gov-links">
+          <a href="#" onclick="showToast('Feature coming soon')">Privacy Policy</a>
+          <a href="#" onclick="showToast('Feature coming soon')">Terms of Service</a>
+          <a href="#" onclick="showToast('Feature coming soon')" id="helpLink">Help</a>
+        </div>
+        <p id="copyrightText">© 2024 CivicLink. All rights reserved.</p>
+        <small id="browserText">Best viewed in Chrome, Firefox, or Safari</small>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

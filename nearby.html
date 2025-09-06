@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nearby Issues - CivicLink Portal</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="gov-header">
+        <div class="gov-info">
+          <div class="gov-logo-section">
+            <div class="brand-main">
+              <div class="jharkhand-emblem">CL</div>
+              <div class="brand-text">
+                <div class="brand-title">CivicLink | Citizen Reporting Platform</div>
+              </div>
+            </div>
+          </div>
+          <div class="support-info">
+             <a href="index.html" class="btn btn-secondary" style="text-decoration: none;">
+                <i class="fas fa-home"></i> Back to Home
+             </a>
+          </div>
+        </div>
+    </div>
+
+    <div class="content-container" style="padding-top: 80px;">
+        <div class="card" style="max-width: 800px; margin: 2rem auto;">
+            <div class="card-header">
+                <div class="card-icon"><i class="fas fa-map-marked-alt"></i></div>
+                <div>
+                    <h2 class="card-title">Nearby Issues</h2>
+                    <p style="color: #666; font-size: 0.875rem; margin-top: 0.25rem;">Issues reported by citizens near your location</p>
+                </div>
+            </div>
+            <div id="nearbyReportsContainer" class="table-container">
+                <p style="text-align: center; color: #666; padding: 1rem;">
+                    <i class="fas fa-spinner fa-spin"></i> Getting your location to find nearby reports...
+                </p>
+            </div>
+        </div>
+    </div>
+
+  <div id="toastContainer"></div>
+  <script src="script.js"></script>
+</body>
+</html>

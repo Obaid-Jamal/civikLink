@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Details - CivicLink Portal</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* Page-Specific Styles */
+    .report-details-container { max-width: 800px; margin: 2rem auto; padding-top: 80px; position: relative; z-index: 1;}
+    .report-details-card { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: #1a202c;}
+    .report-header { text-align: center; margin-bottom: 2rem; }
+    .report-header h2 { font-size: 2rem; color: #1a202c; margin-bottom: 0.5rem; }
+    .report-meta { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 1rem; color: #666; font-size: 0.9rem; }
+    .report-meta-item { display: flex; align-items: center; gap: 0.5rem; flex-basis: 48%; margin-bottom: 0.5rem;}
+    .report-description { background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #e2e8f0;}
+    .photo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+    .photo-grid img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;}
+    .btn-back { margin-bottom: 1rem; }
+
+    /* Admin reply display styles */
+    #adminReplyDisplay {
+        background-color: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: #166534;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+    #adminReplyDisplay h4 { color: #15803d; margin-bottom: 0.75rem; font-size: 1.2rem; }
+    #adminReplyDisplay p { font-size: 1rem; line-height: 1.6; }
+    #adminReplyDisplay img { width: 100%; max-width: 400px; border-radius: 8px; margin-top: 0.5rem; border: 1px solid #ccc; }
+    
+    /* Admin action form styles */
+    #adminActionContainer .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #4a5568; }
+    #adminActionContainer .form-textarea { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #cbd5e1; min-height: 100px; font-size: 1rem;}
+    #adminActionContainer .form-input { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #cbd5e1; background: white;}
+    #adminActionContainer .form-group { margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  
+  <ul class="background-shapes">
+    <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+  </ul>
+
+  <div class="gov-header">
+    <div class="gov-info">
+      <div class="gov-logo-section">
+        <div class="brand-main">
+          <div class="jharkhand-emblem">CL</div>
+          <div class="brand-text">
+            <div class="brand-title">CivicLink | Citizen Reporting Platform</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-details-container" id="reportDetailsContainer">
+    <a href="#" id="backButton" class="btn btn-secondary btn-back"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    
+    <div class="report-details-card">
+      <div class="report-header">
+        <h2 id="reportId"></h2>
+        <span class="status-badge" id="reportStatus"></span>
+      </div>
+      
+      <div class="report-meta">
+        <div class="report-meta-item"><strong>Category:</strong> <span id="reportCategory"></span></div>
+        <div class="report-meta-item"><strong>Priority:</strong> <span id="reportPriority" style="text-transform: capitalize;"></span></div>
+        <div class="report-meta-item"><strong>Location:</strong> <span id="reportLocation"></span></div>
+        <div class="report-meta-item"><strong>Submitted on:</strong> <span id="reportDate"></span></div>
+      </div>
+
+      <div id="adminReplyDisplay" style="display: none;">
+        <h4><i class="fas fa-check-circle"></i> Official Resolution Update</h4>
+        <p id="replyTextDisplay"></p>
+        <div id="replyImageWrapper" style="margin-top: 1rem;">
+            <strong>Resolution Proof:</strong><br>
+            <img id="replyImageDisplay" src="" alt="Proof of resolution">
+        </div>
+      </div>
+
+      <div class="report-description">
+        <strong>Description provided by citizen:</strong>
+        <p id="reportDescription" style="margin-top: 0.5rem;"></p>
+      </div>
+
+      <div id="audioPlayerContainer" style="display: none; margin-bottom: 1rem;">
+          <strong>Voice note submitted by citizen:</strong>
+          <audio id="reportAudioPlayer" controls style="width: 100%; margin-top: 0.5rem;"></audio>
+      </div>
+
+      <h3>Photos Submitted by Citizen</h3>
+      <div class="photo-grid" id="reportPhotos">
+        </div>
+
+      <div id="adminActionContainer" style="display: none; margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
+        
+        <div id="startProgressContainer" style="display: none; margin-bottom: 1.5rem;">
+            <p style="font-size: 0.9rem; color: #4a5568; margin-bottom: 0.5rem;">This issue has not been started. Click here to acknowledge receipt and begin work.</p>
+            <button id="startProgressBtn" class="btn btn-primary" style="width: 100%; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                <i class="fas fa-play"></i> Mark as In Progress
+            </button>
+        </div>
+
+        <div id="resolutionFormContainer" style="display: none;">
+            <h3><i class="fas fa-gavel"></i> Admin Reply & Resolution Form</h3>
+            <form id="adminReplyForm">
+                <div class="form-group">
+                    <label class="form-label" for="replyMessage">Resolution Message for Citizen:</label>
+                    <textarea id="replyMessage" class="form-textarea" placeholder="Explain the resolution steps taken. This message will be sent to the user." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="replyPhoto">Attach Proof of Fix Image (Optional but recommended):</label>
+                    <input type="file" id="replyPhoto" accept="image/*" class="form-input">
+                    <div id="replyImagePreviewContainer" style="margin-top: 1rem;"></div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); width: 100%;">
+                    <i class="fas fa-check-circle"></i> Mark as Resolved and Send Reply
+                </button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer"></div>
+
+  <script>
+    // --- Helper functions ---
+    function getCategoryName(category) {
+        const names = {
+            "roads": "Roads & Transportation", "lighting": "Lighting & Electricity",
+            "water": "Water & Drainage", "waste": "Waste & Sanitation", "safety": "Public Safety"
+        };
+        return names[category] || "Unknown";
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function showToast(message, type = 'success') {
+        const toastContainer = document.getElementById('toastContainer');
+        if (!toastContainer) return;
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        const iconClass = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle');
+        toast.innerHTML = `<i class="fas ${iconClass}"></i> ${message}`;
+        toastContainer.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 100);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    function readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function createNotification(recipient, message, reportId) {
+        const notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+        const newNotification = {
+            id: Date.now(),
+            recipient: recipient,
+            message: message,
+            reportId: reportId,
+            isRead: false,
+            timestamp: new Date().toISOString()
+        };
+        notifications.unshift(newNotification);
+        localStorage.setItem('notifications', JSON.stringify(notifications));
+    }
+
+    // --- Main page logic ---
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Data Loading ---
+        const issueReports = JSON.parse(localStorage.getItem('issueReports')) || [];
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const reportId = parseInt(urlParams.get('id'));
+        const from = urlParams.get('from');
+
+        // --- Back Button Logic ---
+        const backButton = document.getElementById('backButton');
+        if (backButton) {
+            if (from === 'admin') {
+                backButton.href = 'admin-dashboard.html#allReports';
+            } else if (from === 'nearby') {
+                backButton.href = 'nearby.html';
+            } else {
+                backButton.href = 'citizen-dashboard.html#track';
+            }
+        }
+
+        // --- Report Validation ---
+        const container = document.getElementById('reportDetailsContainer');
+        if (!reportId) {
+            container.innerHTML = '<p style="text-align:center; font-size:1.5rem; color:#DC143C;">Invalid report ID.</p>';
+            return;
+        }
+        const reportIndex = issueReports.findIndex(r => r.id === reportId);
+        if (reportIndex === -1) {
+            container.innerHTML = '<p style="text-align:center; font-size:1.5rem; color:#DC143C;">Report not found!</p>';
+            return;
+        }
+        const report = issueReports[reportIndex];
+
+        // --- Populate Report Data ---
+        document.getElementById('reportId').textContent = `Issue #${report.id}`;
+        document.getElementById('reportDescription').textContent = report.description;
+        document.getElementById('reportCategory').textContent = getCategoryName(report.category);
+        document.getElementById('reportPriority').textContent = report.priority;
+        document.getElementById('reportLocation').textContent = report.location;
+        document.getElementById('reportDate').textContent = formatDate(report.dateSubmitted);
+        
+        const statusBadge = document.getElementById('reportStatus');
+        statusBadge.textContent = report.status;
+        statusBadge.className = `status-badge status-${report.status.toLowerCase().replace(/ /g, '')}`;
+        
+        const audioPlayerContainer = document.getElementById('audioPlayerContainer');
+        const audioPlayer = document.getElementById('reportAudioPlayer');
+        if (report.audioRecording) {
+            audioPlayerContainer.style.display = 'block';
+            audioPlayer.src = report.audioRecording;
+        }
+
+        const photosContainer = document.getElementById('reportPhotos');
+        if (report.photos && report.photos.length > 0) {
+            photosContainer.innerHTML = report.photos.map(photoDataUrl => `<img src="${photoDataUrl}" alt="Issue photo">`).join('');
+        } else {
+            photosContainer.innerHTML = '<p style="text-align:center; color:#666;">No photos submitted for this issue.</p>';
+        }
+
+        // --- Display Admin Reply Logic (for all users) ---
+        if (report.reply) {
+            document.getElementById('adminReplyDisplay').style.display = 'block';
+            document.getElementById('replyTextDisplay').textContent = report.reply.message;
+            if (report.reply.imageUrl) {
+                document.getElementById('replyImageDisplay').src = report.reply.imageUrl;
+            } else {
+                document.getElementById('replyImageWrapper').style.display = 'none';
+            }
+        }
+
+        // --- Admin Action Logic (Start Progress vs Resolve) ---
+        const isAdminView = from === 'admin' && currentUser && (currentUser.role === 'admin' || currentUser.role === 'main_admin');
+        const adminActionContainer = document.getElementById('adminActionContainer');
+        const startProgressContainer = document.getElementById('startProgressContainer');
+        const resolutionFormContainer = document.getElementById('resolutionFormContainer');
+
+        if (isAdminView) {
+            if (report.status === 'Submitted') {
+                adminActionContainer.style.display = 'block';
+                startProgressContainer.style.display = 'block';
+                resolutionFormContainer.style.display = 'none';
+            } else if (report.status === 'In Progress') {
+                adminActionContainer.style.display = 'block';
+                startProgressContainer.style.display = 'none';
+                resolutionFormContainer.style.display = 'block';
+            } else {
+                adminActionContainer.style.display = 'none'; // Hide if already Resolved/Completed
+            }
+
+            // --- Event Listener for Start Progress Button ---
+            document.getElementById('startProgressBtn').addEventListener('click', function() {
+                report.status = "In Progress";
+                issueReports[reportIndex] = report;
+                localStorage.setItem('issueReports', JSON.stringify(issueReports));
+                createNotification(report.submittedBy, `Work has started on your report #${report.id}. Status changed to 'In Progress'.`, report.id);
+                showToast("Issue status updated to In Progress!", "success");
+                setTimeout(() => location.reload(), 1000);
+            });
+
+            // --- Event Listener for Resolution Form Submission ---
+            const replyForm = document.getElementById('adminReplyForm');
+            let replyFile = null;
+
+            document.getElementById('replyPhoto').addEventListener('change', event => {
+                replyFile = event.target.files[0];
+                const previewContainer = document.getElementById('replyImagePreviewContainer');
+                if (replyFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewContainer.innerHTML = `<img src="${e.target.result}" alt="Preview" style="width: 150px; height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">`;
+                    };
+                    reader.readAsDataURL(replyFile);
+                } else {
+                    previewContainer.innerHTML = '';
+                }
+            });
+
+            replyForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const message = document.getElementById('replyMessage').value.trim();
+
+                if (!message) {
+                    showToast("Please enter a resolution message.", "error");
+                    return;
+                }
+                
+                const submitButton = replyForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<div class="loading" style="width:16px; height:16px; border-color:white; border-top-color:transparent;"></div> Processing...';
+
+                let imageUrl = null;
+                if (replyFile) {
+                    try {
+                        imageUrl = await readFileAsDataURL(replyFile);
+                    } catch (error) {
+                        showToast("Error reading image file.", "error");
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = '<i class="fas fa-check-circle"></i> Mark as Resolved and Send Reply';
+                        return;
+                    }
+                }
+
+                report.reply = { message: message, imageUrl: imageUrl, adminUsername: currentUser.username, timestamp: new Date().toISOString() };
+                report.status = "Resolved";
+                issueReports[reportIndex] = report;
+                localStorage.setItem('issueReports', JSON.stringify(issueReports));
+
+                createNotification(report.submittedBy, `Admin update: Your report #${report.id} has been resolved.`, report.id);
+                showToast("Reply sent and issue marked as resolved!", "success");
+               setTimeout(() => location.reload(), 1000);
+            });
+        }
+    });
+  </script>
+</body>
+</html>

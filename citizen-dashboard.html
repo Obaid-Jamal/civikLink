@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Dashboard - CivicLink Portal</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="gov-header">
+    <div class="gov-info">
+      <div class="gov-logo-section">
+        <button class="menu-toggle" onclick="toggleNavigationMenu()" id="navMenuToggle">
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+        <div class="menu-dropdown" id="navMenu">
+          <div class="dropdown-section">
+            <div class="dropdown-title">Navigation</div>
+            <div class="dropdown-nav">
+              <a href="index.html" class="dropdown-nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+              </a>
+              <a href="#report" class="dropdown-nav-item active" data-section="report" id="reportTabDropdown">
+                <i class="fas fa-plus-circle"></i>
+                <span>Report Issue</span>
+              </a>
+              <a href="#track" class="dropdown-nav-item" data-section="track" id="trackTabDropdown">
+                <i class="fas fa-search"></i>
+                <span>My Issues</span> </a>
+              <a href="#leaderboard" class="dropdown-nav-item" data-section="leaderboard" id="leaderboardTabDropdown">
+                <i class="fas fa-trophy"></i>
+                <span>Leaderboard</span>
+              </a>
+            </div>
+          </div>
+          <div class="dropdown-section">
+            <div class="dropdown-title">Account</div>
+            <div id="currentUserInfo" class="dropdown-nav-item" style="font-weight: 500;">
+              </div>
+            <div class="dropdown-nav">
+              <a href="#" class="dropdown-nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span id="logoutTextDropdown">Logout</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="brand-main">
+          <div class="jharkhand-emblem">CL</div>
+          <div class="brand-text">
+            <div class="brand-title">CivicLink | Citizen Reporting Platform</div>
+          </div>
+        </div>
+      </div>
+      <div class="support-info">
+<span>📞 Support: 1800-123-4567 | 📧 arib7488@gmail.com</span>        
+        <div class="notification-container">
+            <button class="notification-bell" id="notificationBell">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+            </button>
+            <div class="notification-panel" id="notificationPanel">
+                <div class="notification-header">Notifications</div>
+                <div id="notificationList">
+                    </div>
+            </div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="toggleLanguage()" id="languageToggle" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">
+          <i class="fas fa-language"></i>
+          <span id="langText">English</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="particles" id="particles"></div>
+
+  <div id="userDashboard" class="dashboard active">
+    <div class="content-container">
+      <div id="report" class="section active">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div>
+              <h2 class="card-title" id="reportTitle">Report a Civic Issue</h2>
+              <p style="color: #666; font-size: 0.875rem; margin-top: 0.25rem;" id="reportSubtitle">Submit your civic issues here</p>
+            </div>
+          </div>
+          
+          <form id="issueForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" id="categoryLabel">Issue Category</label>
+                <select class="form-input" id="issueCategory" required>
+                  <option value="">Select Category</option>
+                  <option value="roads">🛣️ Roads & Transportation</option>
+                  <option value="lighting">💡 Lighting & Electricity</option>
+                  <option value="water">💧 Water & Drainage</option>
+                  <option value="waste">🗑️ Waste & Sanitation</option>
+                  <option value="safety">🚨 Public Safety</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" id="priorityLabel">Priority Level</label>
+                <select class="form-input" id="issuePriority" required>
+                  <option value="low">🟢 Low</option>
+                  <option value="medium">🟡 Medium</option>
+                  <option value="high">🔴 High</option>
+                  <option value="urgent">🚨 Urgent</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group form-group-full">
+              <label class="form-label" id="descriptionLabel">Description</label>
+              <div class="description-controls" style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <button type="button" class="btn btn-secondary" id="recordBtn"><i class="fas fa-microphone"></i> Record Voice Note</button>
+                <button type="button" class="btn btn-secondary" id="stopBtn" style="display: none; background-color: #ef4444; color: white;"><i class="fas fa-stop"></i> Stop Recording</button>
+                <audio id="audioPreviewPlayer" controls style="display: none;"></audio>
+                <button type="button" class="btn btn-secondary" id="deleteRecordingBtn" style="display: none;"><i class="fas fa-trash"></i></button>
+              </div>
+              <textarea class="form-textarea" id="issueDescription" placeholder="Please provide detailed information about the issue or record a voice note..."></textarea>
+            </div>
+            
+            <div class="form-group form-group-full">
+              <label class="form-label" id="locationLabel">Location</label>
+              <div class="location-input-group">
+                <input type="text" class="form-input" id="issueLocation" placeholder="Enter address or use current location" required style="padding-left: 1rem;">
+                <button type="button" class="btn btn-secondary" id="getLocationBtn" style="white-space: nowrap;">
+                    <i class="fas fa-crosshairs"></i> Get Location
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group form-group-full">
+              <label class="form-label" id="uploadLabel">Upload Photos (Max 5)</label>
+              <div class="file-upload">
+                <input type="file" id="issuePhoto" accept="image/*" multiple>
+                <label for="issuePhoto" class="file-upload-label">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <span id="uploadText">Click to upload photos or drag and drop</span>
+                </label>
+              </div>
+              <div id="imagePreviewContainer" class="image-preview-container">
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-paper-plane"></i>
+              <span id="submitButtonText">Submit Issue Report</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div id="track" class="section">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fas fa-list-alt"></i>
+            </div>
+            <div>
+              <h2 class="card-title" id="trackTitle">My Reported Issues</h2>
+              <p style="color: #666; font-size: 0.875rem; margin-top: 0.25rem;" id="trackSubtitle">Track the status of issues you have submitted</p>
+            </div>
+          </div>
+          
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th id="issueHeader">Issue</th>
+                  <th id="categoryHeader">Category</th>
+                  <th id="statusHeader">Status</th>
+                  <th id="upvotesHeader">Upvotes</th>
+                  <th id="actionsHeader">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="allCommunityReportsTable">
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div id="leaderboard" class="section">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon"><i class="fas fa-trophy"></i></div>
+                <div>
+                    <h2 class="card-title">Civic Champions Leaderboard</h2>
+                    <p style="color: #666; font-size: 0.875rem; margin-top: 0.25rem;">Top reporting citizens</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Citizen</th>
+                            <th>Points</th>
+                            <th>Reports</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toastContainer"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
